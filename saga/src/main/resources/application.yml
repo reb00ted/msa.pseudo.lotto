@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: saga
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/saga?serverTimezone=Asia/Seoul
+    username: saga
+    password: 1q2w3e4r
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+          defaultBrokerPost: 29092
+        bindings:
+          userCreationEventConsumer-in-0:
+            consumer:
+              configuration:
+                value:
+                  deserializer: msa.pseudo.lotto.saga.kafka.deserializer.CustomJsonDeserializer
+      bindings:
+        userCreationEventConsumer-in-0:
+          destination: userCreation
+          contentType: application/json
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8085
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 3000

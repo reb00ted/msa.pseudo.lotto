@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/users?serverTimezone=Asia/Seoul
+#    username: users
+#    password: 1q2w3e4r
+    url: jdbc:mysql://localhost:3306/user_service?serverTimezone=Asia/Seoul
+    username: user_service
+    password: 1q2w3e4r
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+#          brokers: kafka
+#          defaultBrokerPort: 9092
+        bindings:
+          producer-out-0:
+            producer:
+              configuration:
+                value:
+                  serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#          output:
+#            destination: userCreation
+#            binder: kafka
+      bindings:
+        producer-out-0:
+          destination: userCreation
+          contentType: application/json
+#        bindings:
+#          userCreation:
+#      bindings:
+#        userCreation:
+#          destination: userCreation
+#          binder: kafka
+
+#eureka:
+#  client:
+#    register-with-eureka: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+
+
+server:
+  port: 8091
+  error:
+    whitelabel:
+      enabled: false

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{baseTemplate :: layout (~{::title}, ~{::main})}">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+    <main>
+        <div class="container">
+
+            <div class="py-5 text-center">
+                <h2>로그인</h2>
+                게스트 계정<br/>
+                ID: guest<br/>
+                PW : guest123
+            </div>
+            <h1 th:text="${test}"></h1>
+
+            <form method="post"><!-- th:action th:object="${loginForm}" method="post">-->
+
+<!--                <div th:if="${#fields.hasGlobalErrors()}">-->
+<!--                    <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>-->
+<!--                </div>-->
+
+                <div>
+                    <label for="userId">로그인 ID</label>
+                    <input type="text" id="userId" class="form-control" />
+                </div>
+                <div>
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" class="form-control" />
+                </div>
+
+                <hr class="my-4">
+
+                <div class="row">
+                    <div class="col">
+                        <button class="w-100 btn btn-primary btn-lg" type="button" onclick="login()">로그인</button>
+                    </div>
+                    <div class="col">
+                        <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='items.html'"
+                                th:onclick="|location.href='@{/}'|"
+                                type="button">취소</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div> <!-- /container -->
+
+        <script type="text/javascript">
+            const login = function() {
+                $.ajax({
+                    url: "http://localhost:8080/users/login",
+                    data: JSON.stringify({
+                        userId: $('#userId').val(),
+                        password: $('#password').val()
+                    }),
+                    method: "POST",
+                    contentType: "application/json; charset=utr-8",
+                    dataType: "json"
+                })
+                .done(function(json) {
+                    console.log(json);
+                    if (json.userId != null) {
+                        alert(`로그인 성공`);
+                        let flag = false;
+                        if (window.location.search.indexOf('redirectURL') != -1) {
+                            let params = window.location.search.slice(1).split('&');
+                            for (param of params) {
+                                if (param.indexOf('redirectURL') != -1) {
+                                    flag = true;
+                                    window.location.href = window.location.origin + param.slice(param.indexOf('=') + 1);
+                                }
+                            }
+                        }
+                        if (!flag) window.location.href = window.location.origin;
+                    } else {
+                        alert(json.message);
+                    }
+                })
+                .fail(function(xhr, status, errorThrown) {
+                    alert(status);
+                    alert(errorThrown);
+                });
+            }
+
+        </script>
+    </main>
+</body>
+</html>

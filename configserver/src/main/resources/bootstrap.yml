@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: config-server
+#  profiles:
+#    active: native
+
+  cloud:
+    config:
+      server:
+        git:
+#          uri: https://github.com/reb00ted/spring-cloud-config-test
+#          clone-on-start: true
+          uri: https://github.com/spring-cloud-samples/config-repo
+#          uri: https://github.com/madplay/spring-cloud-config-repository
+#          basedir: target/config
+#          default-label: main
+#          searchPaths: config
+#        repos:
+#          simple: https://github.com/simple/config-repo
+#          special:
+#            pattern: special*/dev*,*special*/dev*
+#            uri: https://github.com/special/config-repo
+#          local:
+#            pattern: local*
+#            uri: file:/home/configsvc/config-repo
+---
+server:
+  port: 8071
+
+---

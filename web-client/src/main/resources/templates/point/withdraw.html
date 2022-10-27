@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{baseTemplate :: layout (~{::title}, ~{::main})}">
+<head>
+    <meta charset="UTF-8">
+    <title>포인트 출금</title>
+</head>
+<body>
+<main>
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>포인트 출금</h2>
+        </div>
+        <div>
+            <span>현재 출금 가능한 포인트 : <span id="currPoint" th:text="${user.point}">0</span></span>
+            <form>
+                출금할 포인트 : <input type="number" id="amount" name="amount" value="0" min="1" th:max="${user.point}" step="1000" required="true">
+                <button class="w-100 btn btn-primary btn-lg" type="button" onclick="withdraw()">출금</button>
+            </form>
+
+        </div>
+    </div>
+    <script type="text/javascript">
+        const withdraw = function() {
+            $.ajax({
+                url: "http://localhost:8080/point/withdraw",
+                data: JSON.stringify({
+                    amount: $('#amount').val()
+                }),
+                method: "POST",
+                contentType: "application/json; charset=utr-8",
+                dataType: "json"
+            })
+            .done(function(json) {
+                console.log(json);
+                if (json.amount != null) {
+                    alert(`${json.amount}포인트 출금을 성공했습니다.`);
+                    $('#currPoint').text(json.currPoint);
+                    $('#userPoint').text(json.currPoint);
+                    $('#amount').val(0);
+                } else {
+                    alert(json.message);
+                }
+            })
+            .fail(function(xhr, status, errorThrown) {
+                alert(status);
+                alert(errorThrown);
+            });
+        }
+
+    </script>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{baseTemplate :: layout (~{::title}, ~{::main})}">
+<head>
+  <meta charset="UTF-8">
+  <title>포인트 변동 내역</title>
+</head>
+<body>
+<main>
+  <div class="container">
+    <div class="py-5 text-center">
+      <h2>포인트 변동 내역</h2>
+    </div>
+    <div th:if="${err}">
+      <p class="field-error" th:text="${err}">오류 메시지</p>
+    </div>
+    <div>
+      <table>
+        <thead>
+        <tr>
+          <th>구분</th>
+          <th>txId</th>
+          <th>금액</th>
+          <th>거래 일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pointTransaction : ${pointHistory.pointTransactionList}">
+          <td th:text="${pointTransaction.transactionType.getValue()}"></td>
+          <td th:text="${pointTransaction.txId} ? ${pointTransaction.txId}"></td>
+          <td th:text="${pointTransaction.amount}"></td>
+          <td th:text="${pointTransaction.createdAt}"></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" th:classappend="${pointHistory.isFirst} ? 'disabled'">
+            <a class="page-link" th:href="|/point/history/${pointHistory.prevPage}|">이전</a>
+          </li>
+
+          <li class="page-item" th:each="pageNum : ${pointHistory.pageList}" th:classappend="${pageNum} eq ${pointHistory.currentPage} ? 'disabled'">
+            <a class="page-link" th:href="|/point/history/${pageNum}|">[[${pageNum}]]</a>
+          </li>
+
+          <li class="page-item" th:classappend="${pointHistory.isLast} ? 'disabled'">
+            <a class="page-link" th:href="|/point/history/${pointHistory.nextPage}|">다음</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

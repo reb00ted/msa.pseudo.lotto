@@ -1,0 +1,115 @@
+version: "3.8"
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.1.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper:/zookeeper"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.1.0
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka:/kafka"
+#      - "kafka:/var/lib/kafka/data"
+#      - "secret:/etc/kafka/secrets"
+
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_HOST://kafka:9092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    ports:
+      - "23306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1q2w3e4r
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/usr/local/etc/redis
+
+#  web-client:
+#
+#  nginx:
+#
+#  gateway:
+#    build:
+#      context: ./gateway
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8072:8072"
+#
+#  eureka:
+#    build:
+#      context: ./eurekaserver
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8761:8761"
+##
+##  cloudconfig:
+##
+#  user_service:
+#    build:
+#      context: ./user
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - mysql
+#      - zookeeper
+#      - kafka
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/users?serverTimezone=Asia/Seoul
+#      SPRING_DATASOURCE_USERNAME: user_service
+#      SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
+#
+#  point_service:
+#    build:
+#      context: ./point-service
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      - mysql
+#      - zookeeper
+#      - kafka
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/point_service?serverTimezone=Asia/Seoul
+#      SPRING_DATASOURCE_USERNAME: point_service
+#      SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
+#
+#  lotto_service:
+#
+#  statistics_service:
+
+volumes:
+  mysql:
+  redis:
+  kafka:
+  secret:
+  zookeeper:

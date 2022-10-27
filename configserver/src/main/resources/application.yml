@@ -1,0 +1,29 @@
+#management.endpoints.web.exposure.include=*
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+#          uri: https://github.com/reb00ted/spring-cloud-config-test
+#          uri: https://github.com/spring-cloud-samples/config-repo.git
+          uri: https://github.com/reb00ted/spring-cloud-config-test.git
+          search-paths: /*
+          skipSslValidation: true
+          force-pull: true
+
+#          clone-on-start: true
+#
+#
+#        native:
+#          searchLocations: 'classpath:/config'
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.cloud.config: DEBUG

@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{baseTemplate :: layout (~{::title}, ~{::main})}">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+    <title>회원 가입</title>
+</head>
+
+<body>
+    <main class="container">
+        <div class="py-5 text-center">
+            <h2>회원 가입</h2>
+        </div>
+
+        <h4 class="mb-3">회원 정보 입력</h4>
+
+        <!--  th:action -->
+        <form action=""  method="post">
+
+            <div>
+                <label for="userId">로그인 ID</label>
+                <input type="text" id="userId"  class="form-control" />
+            </div>
+            <div>
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" class="form-control" />
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col">
+                    <button class="w-100 btn btn-primary btn-lg" type="button" onclick="joinRequestSubmit()">회원 가입</button>
+                </div>
+                <div class="col">
+                    <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='items.html'"
+                            th:onclick="|location.href='@{/}'|"
+                            type="button">취소</button>
+                </div>
+            </div>
+
+        </form>
+        <script type="text/javascript">
+            const joinRequestSubmit = function() {
+                $.ajax({
+                    url: "http://localhost:8080/users/join",
+                    data: JSON.stringify({
+                        userId: $('#userId').val(),
+                        password: $('#password').val()
+                    }),
+                    method: "POST",
+                    contentType: "application/json; charset=utr-8",
+                    dataType: "json"
+                })
+                .done(function(json) {
+                    console.log(json);
+                    if (json.userId != null) {
+                        alert(`${json.userId} 가입되었습니다.`);
+                        console.log(json);
+                        window.location.href = 'http://localhost:8080/';
+                    } else {
+                        alert(json.message);
+                    }
+                })
+                .fail(function(xhr, status, errorThrown) {
+                    alert(status);
+                    alert(errorThrown);
+                });
+
+                return false;
+            }
+
+        </script>
+
+    </main> <!-- /container -->
+</body>
+</html>
